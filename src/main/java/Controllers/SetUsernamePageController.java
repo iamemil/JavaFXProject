@@ -31,9 +31,11 @@ public class SetUsernamePageController {
         } else {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/GamePage.fxml"));
             Parent root = fxmlLoader.load();
-            fxmlLoader.<GamePageController>getController().initdata(newUsernameTextField.getText());
+            Scene scene = new Scene(root);
+            fxmlLoader.<GamePageController>getController().initdata(newUsernameTextField.getText(),scene);
+            //fxmlLoader.<GamePageController>getController().initKeyActions(scene);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(scene);
             stage.show();
             //log.info("Username is set to {}, loading game scene.", newUsernameTextField.getText());
         }

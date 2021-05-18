@@ -1,5 +1,6 @@
 package Models;
 
+
 public class Cell {
 
     private int topWall;
@@ -19,4 +20,21 @@ public class Cell {
         this.leftWall=_left;
         this.rightWall=_right;
     }
+
+    public int getTopWall(){
+        return topWall;
+    }
+
+    public int getBottomWall() {
+        return bottomWall;
+    }
+
+    public int getLeftWall(){
+        return leftWall;
+    }
+
+    public int getRightWall(){
+        return rightWall;
+    }
+
 }
