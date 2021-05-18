@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #4696e5#4696e5 #4696e5#4696e5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.SetUsernamePageController">
+   <children>
+      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Your Username" StackPane.alignment="CENTER">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <StackPane.margin>
+            <Insets bottom="100.0" right="95.0" />
+         </StackPane.margin>
+      </Text>
+      <TextField fx:id="newUsernameTextField" maxHeight="26.0" maxWidth="200.0" minHeight="26.0" minWidth="200.0" prefHeight="26.0" prefWidth="200.0" StackPane.alignment="CENTER">
+         <StackPane.margin>
+            <Insets bottom="30.0" />
+         </StackPane.margin>
+      </TextField>
+      <Button fx:id="startGameBtn" maxWidth="100.0" mnemonicParsing="false" onAction="#startGame" prefHeight="50.0" style="-fx-background-color: white;" text="Start" textFill="#4696e5" StackPane.alignment="CENTER">
+         <StackPane.margin>
+            <Insets top="100.0" />
+         </StackPane.margin>
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
+      <Label fx:id="errorLabel" maxWidth="200.0" minWidth="200.0" opacity="0.8" prefWidth="200.0" textFill="WHITE" StackPane.alignment="CENTER">
+         <StackPane.margin>
+            <Insets top="20.0" />
+         </StackPane.margin>
+      </Label>
+   </children>
+</StackPane>
