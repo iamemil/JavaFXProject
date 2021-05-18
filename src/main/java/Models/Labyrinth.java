@@ -45,7 +45,7 @@ public class Labyrinth {
         this.cells[4][0] = new Cell(0,1,1,0);
         this.cells[4][1] = new Cell();
         this.cells[4][2] = new Cell();
-        this.cells[4][3] = new Cell(1,0,0,1);
+        this.cells[4][3] = new Cell(1,0,0,0);
         this.cells[4][4] = new Cell(0,1,0,0);
         this.cells[4][5] = new Cell();
         this.cells[4][6] = new Cell(1,0,0,1);

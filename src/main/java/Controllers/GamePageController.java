@@ -78,7 +78,6 @@ public class GamePageController {
             if(keyEvent.getCode() == KeyCode.RIGHT){
                 move(Direction.RIGHT);
             }
-            System.out.println(userPosition.getRowPosition() + " "+ userPosition.getColPosition());
         });
 
     }
@@ -89,7 +88,6 @@ public class GamePageController {
         int newCol = userPosition.getColPosition() + direction.getDx();
 
         if((newRow >= 0 && newRow <= 6) && (newCol >= 0 && newCol <= 6)){
-                //System.out.println(newRow + " "+newCol + "\n");
                 Cell currentCell = this.labyrinth.getCell(userPosition.getRowPosition(), userPosition.getColPosition());
                 boolean possibleMove=false;
                 switch (direction){
@@ -99,17 +97,24 @@ public class GamePageController {
                     case RIGHT -> possibleMove = currentCell.getRightWall() == 0 ? true : false;
                 }
                 if(possibleMove){
-                    userPosition.setRowPosition(newRow);
-                    userPosition.setColPosition(newCol);
-                    this.numOfMoves+=1;
-                    numOfMovesLabel.setText("Moves: " + String.valueOf(this.numOfMoves));
-                    gridBoard.getChildren().remove(playerCircle);
-                    gridBoard.add(playerCircle,this.userPosition.getColPosition(),this
-                    .userPosition.getRowPosition());
-
+                    if(!checkGameEnd()){
+                        userPosition.setRowPosition(newRow);
+                        userPosition.setColPosition(newCol);
+                        this.numOfMoves+=1;
+                        numOfMovesLabel.setText("Moves: " + String.valueOf(this.numOfMoves));
+                        gridBoard.getChildren().remove(playerCircle);
+                        gridBoard.add(playerCircle,this.userPosition.getColPosition(),this
+                                .userPosition.getRowPosition());
+                    }
+                    if(checkGameEnd())
+                    usernameLabel.setText("Congrats, " + this.userName+"! You won !");
                 }
         }
 
+    }
+
+    private boolean checkGameEnd(){
+        return userPosition.getRowPosition() == 5 && userPosition.getColPosition() == 2 ? true : false;
     }
 
 }

@@ -19,11 +19,6 @@ import java.io.IOException;
 
 public class MainPageController {
 
-    @FXML
-    private Button newGameBtn;
-
-    @FXML
-    private Button resultsBtn;
 
     public void startNewGame(ActionEvent actionEvent) throws IOException  {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SetUsernamePage.fxml"));
