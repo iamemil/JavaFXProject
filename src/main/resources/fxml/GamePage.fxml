@@ -3,42 +3,55 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #4696e5#4696e5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.GamePageController">
    <children>
-      <VBox maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0" StackPane.alignment="TOP_CENTER">
+      <GridPane fx:id="board" maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0" style="-fx-border-color: black; -fx-border-width: 2; -fx-background-color: white;">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
          <children>
-            <GridPane gridLinesVisible="true" maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0">
-              <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <opaqueInsets>
-                  <Insets top="1.0" />
-               </opaqueInsets>
-            </GridPane>
+            <Circle fx:id="playerCircle" fill="#0c88f5" radius="20.0" stroke="#0b85f7" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Circle fx:id="finishCircle" fill="WHITE" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <Pane fx:id="row0col0right" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid hidden hidden;" />
+            <Pane fx:id="row0col2bottom" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden hidden solid hidden;" GridPane.columnIndex="2" />
+            <Pane fx:id="row0col3right" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid hidden hidden;" GridPane.columnIndex="3" />
+            <Pane fx:id="row0col6bottom" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden hidden solid hidden;" GridPane.columnIndex="6" />
+            <Pane fx:id="row2col1bottom" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden hidden solid hidden;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Pane fx:id="row2col2right" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid hidden hidden;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Pane fx:id="row2col5right" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid hidden hidden;" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+            <Pane fx:id="row3col3RightBottom" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid solid hidden;" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <Pane fx:id="row3col4right" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid hidden hidden;" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+            <Pane fx:id="row3col6bottom" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden hidden solid hidden;" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+            <Pane fx:id="row4col0bottom" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden hidden solid hidden;" GridPane.rowIndex="4" />
+            <Pane fx:id="row4col4bottom" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden hidden solid hidden;" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+            <Pane fx:id="row5col2LeftRightBottom" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid solid solid;" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <Pane fx:id="row6col3right" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid hidden hidden;" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+            <Pane fx:id="row6col5right" prefHeight="200.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: hidden solid hidden hidden;" GridPane.columnIndex="5" GridPane.rowIndex="6" />
          </children>
-         <StackPane.margin>
-            <Insets top="50.0" />
-         </StackPane.margin>
-      </VBox>
+      </GridPane>
    </children>
 </StackPane>
