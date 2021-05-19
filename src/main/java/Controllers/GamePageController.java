@@ -1,17 +1,11 @@
 package Controllers;
 
-import Models.Cell;
-import Models.Direction;
-import Models.Labyrinth;
-import Models.Position;
+import Models.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,21 +14,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 import java.time.Instant;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import static javafx.scene.shape.StrokeType.INSIDE;
 
 public class GamePageController {
 
-    private String userName;
-    private int numOfMoves;
+    private Player player;
     private Labyrinth labyrinth;
-    private Position userPosition;
-    private Instant gameStart;
-    private Instant gameEnd;
 
     @FXML
     private GridPane gridBoard;
@@ -54,9 +41,11 @@ public class GamePageController {
     private Circle playerCircle;
 
     public GamePageController(){
-        this.numOfMoves=0;
         this.labyrinth = new Labyrinth();
-        this.userPosition = new Position();
+        this.player = new Player();
+        this.player.setNumOfMoves(0);
+        this.player.setPosition(new Position());
+        this.player.setResult(false);
     }
 
     private Circle createCircle(){
@@ -68,29 +57,49 @@ public class GamePageController {
         return circle;
     }
     public void initdata(String userName,Scene scene) {
-        this.userName = userName;
-        usernameLabel.setText("Current user: " + this.userName);
-        numOfMovesLabel.setText("Moves: " + String.valueOf(this.numOfMoves));
+        //this.userName = userName;
+        player.setUserName(userName);
+        //usernameLabel.setText("Current user: " + this.userName);
+        usernameLabel.setText("Current user: " + this.player.getUserName());
+        //numOfMovesLabel.setText("Moves: " + String.valueOf(this.numOfMoves));
+        numOfMovesLabel.setText("Moves: " + String.valueOf(this.player.getNumOfMoves()));
 
         playerCircle = createCircle();
         gridBoard.add(playerCircle,4,1);
 
-        gameStart = Instant.now();
+        //gameStart = Instant.now();
+        this.player.setGameStart(Instant.now());
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
-            public void handle(KeyEvent keyEvent) {
+            public void handle(KeyEvent keyEvent){
                 if(keyEvent.getCode() == KeyCode.UP){
-                    move(Direction.UP);
+                    try {
+                        move(Direction.UP);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if(keyEvent.getCode() == KeyCode.DOWN){
-                    move(Direction.DOWN);
+                    try {
+                        move(Direction.DOWN);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if(keyEvent.getCode() == KeyCode.LEFT){
-                    move(Direction.LEFT);
+                    try {
+                        move(Direction.LEFT);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if(keyEvent.getCode() == KeyCode.RIGHT){
-                    move(Direction.RIGHT);
+                    try {
+                        move(Direction.RIGHT);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -107,20 +116,28 @@ public class GamePageController {
         giveUpBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println("Game given up");
-                finishGame();
+                if(player.getGameEnd()==null)
+                    System.out.println("Game given up");
+                try {
+                    finishGame();
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
     }
 
 
-    private void move(Direction direction){
-        int newRow = userPosition.getRowPosition() + direction.getDy();
-        int newCol = userPosition.getColPosition() + direction.getDx();
+    private void move(Direction direction) throws JsonProcessingException {
+        //int newRow = userPosition.getRowPosition() + direction.getDy();
+        //int newCol = userPosition.getColPosition() + direction.getDx();
+        int newRow = this.player.getPosition().getRowPosition() + direction.getDy();
+        int newCol = this.player.getPosition().getColPosition() + direction.getDx();
+
 
         if((newRow >= 0 && newRow <= 6) && (newCol >= 0 && newCol <= 6)){
-                Cell currentCell = this.labyrinth.getCell(userPosition.getRowPosition(), userPosition.getColPosition());
+                Cell currentCell = this.labyrinth.getCell(this.player.getPosition().getRowPosition(), this.player.getPosition().getColPosition());
                 boolean possibleMove=false;
                 switch (direction){
                     case UP -> possibleMove = currentCell.getTopWall() == 0 ? true : false;
@@ -130,16 +147,20 @@ public class GamePageController {
                 }
                 if(possibleMove){
                     if(!checkGameEnd()){
-                        userPosition.setRowPosition(newRow);
-                        userPosition.setColPosition(newCol);
-                        this.numOfMoves+=1;
-                        numOfMovesLabel.setText("Moves: " + String.valueOf(this.numOfMoves));
+                        //userPosition.setRowPosition(newRow);
+                        //userPosition.setColPosition(newCol);
+                        this.player.getPosition().setRowPosition(newRow);
+                        this.player.getPosition().setColPosition(newCol);
+                        //this.numOfMoves+=1;
+                        this.player.setNumOfMoves(this.player.getNumOfMoves()+1);
+                        numOfMovesLabel.setText("Moves: " + String.valueOf(this.player.getNumOfMoves()));
                         gridBoard.getChildren().remove(playerCircle);
-                        gridBoard.add(playerCircle,this.userPosition.getColPosition(),this
-                                .userPosition.getRowPosition());
+                        gridBoard.add(playerCircle,this.player.getPosition().getColPosition(),this
+                                .player.getPosition().getRowPosition());
                     }
                     if(checkGameEnd()) {
-                        usernameLabel.setText("Congrats, " + this.userName + "! You won !");
+                        this.player.setResult(true);
+                        usernameLabel.setText("Congrats, " + this.player.getUserName() + "! You won !");
                         finishGame();
                     }
                 }
@@ -148,30 +169,32 @@ public class GamePageController {
     }
 
     private boolean checkGameEnd(){
-        return userPosition.getRowPosition() == 5 && userPosition.getColPosition() == 2 ? true : false;
+        return this.player.getPosition().getRowPosition() == 5 && this.player.getPosition().getColPosition() == 2 ? true : false;
     }
 
     public void resetGame() {
-        this.numOfMoves=0;
-        numOfMovesLabel.setText("Moves: " + String.valueOf(this.numOfMoves));
+        this.player.setNumOfMoves(0);;
+        usernameLabel.setText("Current user: " + this.player.getUserName());
+        numOfMovesLabel.setText("Moves: " + String.valueOf(this.player.getNumOfMoves()));
         gridBoard.getChildren().remove(playerCircle);
-        this.userPosition.setRowPosition(1);
-        this.userPosition.setColPosition(4);
+        this.player.getPosition().setRowPosition(1);
+        this.player.getPosition().setColPosition(4);
         gridBoard.add(playerCircle,4,1);
-        gameStart = Instant.now();
-        gameEnd = null;
+        this.player.setResult(false);
+        this.player.setGameStart(Instant.now());
+        this.player.setGameEnd(null);
     }
 
-    public void finishGame() {
-        if (gameEnd == null) {
-        gameEnd = Instant.now();
-        System.out.println(gameStart.toString() + " " + gameEnd.toString());
-        System.out.println((int) (gameEnd.getEpochSecond() - gameStart.getEpochSecond()));
-
-
-
-
-
-    }
+    public void finishGame() throws JsonProcessingException {
+        if (this.player.getGameEnd() == null) {
+        this.player.setGameEnd(Instant.now());
+        this.player.setGameDuration((int) (this.player.getGameEnd().getEpochSecond() - this.player.getGameStart().getEpochSecond()));
+        //System.out.println(this.player.getGameStart().toString() + " " + this.player.getGameEnd().toString());
+        //System.out.println((int) (this.player.getGameEnd().getEpochSecond() - this.player.getGameStart().getEpochSecond()));
+        //usernameLabel.setText("Current user: " + this.player.getUserName());
+        ObjectMapper obj = new ObjectMapper().registerModule(new JavaTimeModule());
+        String jsonString = obj.writeValueAsString(this.player);
+        System.out.println(jsonString);
+        }
     }
 }
