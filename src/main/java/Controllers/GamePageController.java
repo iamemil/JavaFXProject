@@ -5,6 +5,7 @@ import Models.Direction;
 import Models.Labyrinth;
 import Models.Position;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +23,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.Instant;
 
 import static javafx.scene.shape.StrokeType.INSIDE;
 
@@ -31,6 +33,8 @@ public class GamePageController {
     private int numOfMoves;
     private Labyrinth labyrinth;
     private Position userPosition;
+    private Instant gameStart;
+    private Instant gameEnd;
 
     @FXML
     private GridPane gridBoard;
@@ -40,6 +44,12 @@ public class GamePageController {
 
     @FXML
     private Label numOfMovesLabel;
+
+    @FXML
+    private Button gameResetbtn;
+
+    @FXML
+    private Button giveUpBtn;
 
     private Circle playerCircle;
 
@@ -65,18 +75,40 @@ public class GamePageController {
         playerCircle = createCircle();
         gridBoard.add(playerCircle,4,1);
 
-        scene.setOnKeyPressed(keyEvent ->{
-            if(keyEvent.getCode() == KeyCode.UP){
-                move(Direction.UP);
+        gameStart = Instant.now();
+
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if(keyEvent.getCode() == KeyCode.UP){
+                    move(Direction.UP);
+                }
+                if(keyEvent.getCode() == KeyCode.DOWN){
+                    move(Direction.DOWN);
+                }
+                if(keyEvent.getCode() == KeyCode.LEFT){
+                    move(Direction.LEFT);
+                }
+                if(keyEvent.getCode() == KeyCode.RIGHT){
+                    move(Direction.RIGHT);
+                }
             }
-            if(keyEvent.getCode() == KeyCode.DOWN){
-                move(Direction.DOWN);
+        });
+
+        gameResetbtn.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent actionEvent)
+            {
+                System.out.println("Game resetted");
+                resetGame();
             }
-            if(keyEvent.getCode() == KeyCode.LEFT){
-                move(Direction.LEFT);
-            }
-            if(keyEvent.getCode() == KeyCode.RIGHT){
-                move(Direction.RIGHT);
+        });
+
+        giveUpBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println("Game given up");
+                finishGame();
             }
         });
 
@@ -106,8 +138,10 @@ public class GamePageController {
                         gridBoard.add(playerCircle,this.userPosition.getColPosition(),this
                                 .userPosition.getRowPosition());
                     }
-                    if(checkGameEnd())
-                    usernameLabel.setText("Congrats, " + this.userName+"! You won !");
+                    if(checkGameEnd()) {
+                        usernameLabel.setText("Congrats, " + this.userName + "! You won !");
+                        finishGame();
+                    }
                 }
         }
 
@@ -117,4 +151,27 @@ public class GamePageController {
         return userPosition.getRowPosition() == 5 && userPosition.getColPosition() == 2 ? true : false;
     }
 
+    public void resetGame() {
+        this.numOfMoves=0;
+        numOfMovesLabel.setText("Moves: " + String.valueOf(this.numOfMoves));
+        gridBoard.getChildren().remove(playerCircle);
+        this.userPosition.setRowPosition(1);
+        this.userPosition.setColPosition(4);
+        gridBoard.add(playerCircle,4,1);
+        gameStart = Instant.now();
+        gameEnd = null;
+    }
+
+    public void finishGame() {
+        if (gameEnd == null) {
+        gameEnd = Instant.now();
+        System.out.println(gameStart.toString() + " " + gameEnd.toString());
+        System.out.println((int) (gameEnd.getEpochSecond() - gameStart.getEpochSecond()));
+
+
+
+
+
+    }
+    }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #4696e5#4696e5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.GamePageController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #4696e5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.GamePageController">
    <children>
       <GridPane fx:id="gridBoard" maxHeight="350.0" maxWidth="350.0" minHeight="350.0" minWidth="350.0" prefHeight="350.0" prefWidth="350.0" style="-fx-border-color: black; -fx-border-width: 2; -fx-background-color: white;">
         <columnConstraints>
@@ -69,5 +70,27 @@
             <Insets bottom="385.0" left="75.0" />
          </StackPane.margin>
       </Label>
+      <Button fx:id="gameResetbtn" mnemonicParsing="false" style="-fx-background-color: white;" text="Reset" textFill="#4696e5" StackPane.alignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+         <StackPane.margin>
+            <Insets right="180.0" top="425.0" />
+         </StackPane.margin>
+         <padding>
+            <Insets bottom="10.0" left="40.0" right="40.0" top="10.0" />
+         </padding>
+      </Button>
+      <Button fx:id="giveUpBtn" mnemonicParsing="false" style="-fx-background-color: white;" text="Give Up" textFill="#4696e5" StackPane.alignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+         <padding>
+            <Insets bottom="10.0" left="40.0" right="40.0" top="10.0" />
+         </padding>
+         <StackPane.margin>
+            <Insets left="160.0" top="425.0" />
+         </StackPane.margin>
+      </Button>
    </children>
 </StackPane>

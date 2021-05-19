@@ -37,6 +37,7 @@ public class SetUsernamePageController {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
+
             //log.info("Username is set to {}, loading game scene.", newUsernameTextField.getText());
         }
     }
