@@ -2,10 +2,16 @@ package Controllers;
 
 import Models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,8 +20,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+
+import java.io.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.stage.Stage;
+
 import static javafx.scene.shape.StrokeType.INSIDE;
 
 public class GamePageController {
@@ -57,17 +70,12 @@ public class GamePageController {
         return circle;
     }
     public void initdata(String userName,Scene scene) {
-        //this.userName = userName;
         player.setUserName(userName);
-        //usernameLabel.setText("Current user: " + this.userName);
         usernameLabel.setText("Current user: " + this.player.getUserName());
-        //numOfMovesLabel.setText("Moves: " + String.valueOf(this.numOfMoves));
         numOfMovesLabel.setText("Moves: " + String.valueOf(this.player.getNumOfMoves()));
 
         playerCircle = createCircle();
         gridBoard.add(playerCircle,4,1);
-
-        //gameStart = Instant.now();
         this.player.setGameStart(Instant.now());
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -130,11 +138,8 @@ public class GamePageController {
 
 
     private void move(Direction direction) throws JsonProcessingException {
-        //int newRow = userPosition.getRowPosition() + direction.getDy();
-        //int newCol = userPosition.getColPosition() + direction.getDx();
         int newRow = this.player.getPosition().getRowPosition() + direction.getDy();
         int newCol = this.player.getPosition().getColPosition() + direction.getDx();
-
 
         if((newRow >= 0 && newRow <= 6) && (newCol >= 0 && newCol <= 6)){
                 Cell currentCell = this.labyrinth.getCell(this.player.getPosition().getRowPosition(), this.player.getPosition().getColPosition());
@@ -147,11 +152,8 @@ public class GamePageController {
                 }
                 if(possibleMove){
                     if(!checkGameEnd()){
-                        //userPosition.setRowPosition(newRow);
-                        //userPosition.setColPosition(newCol);
                         this.player.getPosition().setRowPosition(newRow);
                         this.player.getPosition().setColPosition(newCol);
-                        //this.numOfMoves+=1;
                         this.player.setNumOfMoves(this.player.getNumOfMoves()+1);
                         numOfMovesLabel.setText("Moves: " + String.valueOf(this.player.getNumOfMoves()));
                         gridBoard.getChildren().remove(playerCircle);
@@ -189,12 +191,38 @@ public class GamePageController {
         if (this.player.getGameEnd() == null) {
         this.player.setGameEnd(Instant.now());
         this.player.setGameDuration((int) (this.player.getGameEnd().getEpochSecond() - this.player.getGameStart().getEpochSecond()));
-        //System.out.println(this.player.getGameStart().toString() + " " + this.player.getGameEnd().toString());
-        //System.out.println((int) (this.player.getGameEnd().getEpochSecond() - this.player.getGameStart().getEpochSecond()));
-        //usernameLabel.setText("Current user: " + this.player.getUserName());
         ObjectMapper obj = new ObjectMapper().registerModule(new JavaTimeModule());
         String jsonString = obj.writeValueAsString(this.player);
         System.out.println(jsonString);
+        saveGame();
         }
+    }
+
+    public void saveGame(){
+        File data = new File(GamePageController.class.getClassLoader().getResource("data.json").getFile());
+
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
+        try {
+            List<Player> playerList = new ArrayList<Player>();
+
+            if(data.length()!=0){
+                playerList = objectMapper.readValue(data, new TypeReference<List<Player>>() {
+                });
+            }
+            playerList.add(this.player);
+            writer.writeValue(data, playerList);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void goToMenu(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 }

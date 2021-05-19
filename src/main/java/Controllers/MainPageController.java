@@ -28,6 +28,11 @@ public class MainPageController {
         stage.show();
     }
 
-    public void showResults(ActionEvent actionEvent) {
+    public void showResults(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ResultPage.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 }

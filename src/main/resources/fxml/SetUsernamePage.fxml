@@ -8,7 +8,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #4696e5#4696e5 #4696e5#4696e5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.SetUsernamePageController">
    <children>
       <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Your Username" StackPane.alignment="CENTER">
@@ -37,5 +36,13 @@
             <Insets top="20.0" />
          </StackPane.margin>
       </Label>
+      <Button fx:id="returnToMenu" alignment="CENTER" mnemonicParsing="false" onAction="#goToMenu" style="-fx-background-color: white;" text="Main Menu" textFill="#4696e5" StackPane.alignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+         <StackPane.margin>
+            <Insets top="220.0" />
+         </StackPane.margin>
+      </Button>
    </children>
 </StackPane>

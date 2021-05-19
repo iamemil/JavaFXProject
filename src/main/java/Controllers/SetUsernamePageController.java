@@ -41,4 +41,12 @@ public class SetUsernamePageController {
             //log.info("Username is set to {}, loading game scene.", newUsernameTextField.getText());
         }
     }
+
+    public void goToMenu(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
 }

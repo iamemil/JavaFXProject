@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.Instant;
 
 @Data
-public class Player {
+public class Player implements Comparable<Player> {
     private String userName;
     private int numOfMoves;
     private Position Position;
@@ -14,4 +14,9 @@ public class Player {
     private int gameDuration;
     private boolean result;
 
+
+    @Override
+    public int compareTo(Player o) {
+        return (o.getNumOfMoves()/o.getGameDuration())-(this.getNumOfMoves()/this.getGameDuration());
+    }
 }
