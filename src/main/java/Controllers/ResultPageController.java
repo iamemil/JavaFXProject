@@ -3,9 +3,7 @@ package Controllers;
 import Models.Player;
 import Models.PlayerResult;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,10 +20,12 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller to manage actions in {@code ResultPage}
+ */
 public class ResultPageController {
 
     @FXML
@@ -36,6 +36,11 @@ public class ResultPageController {
     @FXML
     private TableColumn<Player, Double> score;
 
+    /**
+     * Initializes ResultPage by gathering needed data from data.json.
+     * If there is data in data.json, then it is added to {@code ObservableList<PlayerResult> results} list.
+     * results list is then passed as {@code tableView.setItems(results)}
+     */
     @FXML
     private void initialize() {
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -70,7 +75,11 @@ public class ResultPageController {
 
 
     }
-
+    /**
+     * When New Game button is pressed, this function gets called.
+     * Function sets stage scene to {@code MainPage}
+     * @throws IOException if {@code FXMLLoader} instance encounters exception.
+     */
     public void goToMenu(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
         Parent root = fxmlLoader.load();

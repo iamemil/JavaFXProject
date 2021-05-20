@@ -1,5 +1,8 @@
 package Models;
 
+/**
+ * Enum to handle directions in the project
+ */
 public enum Direction {
     LEFT(-1, 0),
     RIGHT(1, 0),
@@ -20,14 +23,5 @@ public enum Direction {
 
     public int getDy(){
         return this.dy;
-    }
-
-    public static Direction of(int dx, int dy) {
-        for (Direction direction : values()) {
-            if (direction.dx == dx && direction.dy == dy) {
-                return direction;
-            }
-        }
-        throw new IllegalArgumentException();
     }
 }

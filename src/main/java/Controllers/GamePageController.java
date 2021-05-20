@@ -31,6 +31,9 @@ import javafx.stage.Stage;
 
 import static javafx.scene.shape.StrokeType.INSIDE;
 
+/**
+ * Controller to manage actions in {@code GamePage}
+ */
 public class GamePageController {
 
     final private Player player;
@@ -54,6 +57,9 @@ public class GamePageController {
 
     private Circle playerCircle;
 
+    /**
+     * Initializes properties.
+     */
     public GamePageController(){
         this.labyrinth = new Labyrinth();
         this.player = new Player();
@@ -62,6 +68,10 @@ public class GamePageController {
         this.player.setResult(false);
     }
 
+    /**
+     * Function to create blue circle to represent player.
+     * @return blue circle with the radius of 20 and the color #0c88f5"
+     */
     private Circle createCircle(){
         Circle circle = new Circle();
         circle.setRadius(20);
@@ -70,6 +80,12 @@ public class GamePageController {
         circle.setStrokeType(INSIDE);
         return circle;
     }
+
+    /**
+     * Function to initialize necessary data
+     * @param userName name of the player
+     * @param scene scene is passed to be able to add {@code EventFilter} and {@code setOnAction} functions
+     */
     public void initdata(String userName,Scene scene) {
         player.setUserName(userName);
         usernameLabel.setText("Current user: " + this.player.getUserName());
@@ -82,32 +98,34 @@ public class GamePageController {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent){
-                if(keyEvent.getCode() == KeyCode.UP){
-                    try {
-                        move(Direction.UP);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                if(player.getGameEnd()==null){
+                    if(keyEvent.getCode() == KeyCode.UP){
+                        try {
+                            move(Direction.UP);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-                if(keyEvent.getCode() == KeyCode.DOWN){
-                    try {
-                        move(Direction.DOWN);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                    if(keyEvent.getCode() == KeyCode.DOWN){
+                        try {
+                            move(Direction.DOWN);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-                if(keyEvent.getCode() == KeyCode.LEFT){
-                    try {
-                        move(Direction.LEFT);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                    if(keyEvent.getCode() == KeyCode.LEFT){
+                        try {
+                            move(Direction.LEFT);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-                if(keyEvent.getCode() == KeyCode.RIGHT){
-                    try {
-                        move(Direction.RIGHT);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                    if(keyEvent.getCode() == KeyCode.RIGHT){
+                        try {
+                            move(Direction.RIGHT);
+                        } catch (JsonProcessingException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -117,7 +135,6 @@ public class GamePageController {
             @Override
             public void handle(ActionEvent actionEvent)
             {
-                System.out.println("Game resetted");
                 resetGame();
             }
         });
@@ -125,21 +142,25 @@ public class GamePageController {
         giveUpBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                if(player.getGameEnd()==null)
-                    System.out.println("Game given up");
-                try {
-                    gameResetbtn.setDisable(true);
-                    giveUpBtn.setDisable(true);
-                    finishGame();
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
+                //if(player.getGameEnd()==null)
+                //    System.out.println("Game given up");
+                gameResetbtn.setDisable(true);
+                giveUpBtn.setDisable(true);
+                finishGame();
             }
         });
 
     }
 
-
+    /**
+     * Function to move player and the blue circle that represents player.
+     * Movement is achieved by first checking if next movement is possible,
+     * then it checks borders of current cell. If everything is okay until now,
+     * function proceeds to set updated Moves count in the GamePage and updates location of blue circle.
+     * If user wins, function disables Reset and Give Up buttons.
+     * @param direction direction of player
+     * @throws JsonProcessingException if {@code finishGame()} function encounters JsonProcessingException.
+     */
     private void move(Direction direction) throws JsonProcessingException {
         int newRow = playerPosition.getRowPosition() + direction.getDy();
         int newCol = playerPosition.getColPosition() + direction.getDx();
@@ -157,7 +178,6 @@ public class GamePageController {
                     if(!checkGameEnd()){
                         this.playerPosition.setRowPosition(newRow);
                         this.playerPosition.setColPosition(newCol);
-
                         this.player.setNumOfMoves(this.player.getNumOfMoves()+1);
                         numOfMovesLabel.setText("Moves: " + this.player.getNumOfMoves());
                         gridBoard.getChildren().remove(playerCircle);
@@ -176,14 +196,27 @@ public class GamePageController {
 
     }
 
+    /**
+     * Checks if player won the game
+     * @return returns 1 if player won, 0 otherwise.
+     */
     private boolean checkGameEnd(){
         return this.playerPosition.getRowPosition() == 5 && this.playerPosition.getColPosition() == 2;
     }
 
+    /**
+     * Sets player's number of moves to 0.
+     * Resets usernameLabel to "Current user: {@code username}".
+     * Resets numOfMovesLabel to "Moves: 0".
+     * Resets blue circle's position by removing it from current place in gridpane and placing in initial place.
+     * Sets player's result to false.
+     * Sets player's game start time to current time.
+     * Sets player's game end time to {@code null}.
+     */
     public void resetGame() {
         this.player.setNumOfMoves(0);
         usernameLabel.setText("Current user: " + this.player.getUserName());
-        numOfMovesLabel.setText("Moves: " + this.player.getNumOfMoves());
+        numOfMovesLabel.setText("Moves: 0");
         gridBoard.getChildren().remove(playerCircle);
         this.playerPosition.setRowPosition(1);
         this.playerPosition.setColPosition(4);
@@ -193,24 +226,30 @@ public class GamePageController {
         this.player.setGameEnd(null);
     }
 
-    public void finishGame() throws JsonProcessingException {
+    /**
+     * Sets player's game end time current time if it is null.
+     * Calls {@code saveGame()} function.
+     */
+    public void finishGame(){
         if (this.player.getGameEnd() == null) {
         this.player.setGameEnd(Instant.now());
-        ObjectMapper obj = new ObjectMapper().registerModule(new JavaTimeModule());
-        String jsonString = obj.writeValueAsString(this.player);
-        System.out.println(jsonString);
         saveGame();
         }
     }
 
+    /**
+     * Function gets {@code data.json} file by using Class Loader Mechanism.
+     * Then it checks if {@code data.json} has data.
+     * If yes, then by using {@code ObjectMapper} it adds all data from the file to a {@code List<Player> playerList}.
+     * Then it adds current user to the list.
+     * Finally, {@code ObjectWriter} writes the new data to {@code data.json}
+     */
     public void saveGame(){
         File data = new File(GamePageController.class.getClassLoader().getResource("data.json").getFile());
-
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
         try {
             List<Player> playerList = new ArrayList<Player>();
-
             if(data.length()!=0){
                 playerList = objectMapper.readValue(data, new TypeReference<List<Player>>() {
                 });
@@ -223,6 +262,11 @@ public class GamePageController {
 
     }
 
+    /**
+     * When New Game button is pressed, this function gets called.
+     * Function sets stage scene to {@code MainPage}
+     * @throws IOException if {@code FXMLLoader} instance encounters exception.
+     */
     public void goToMenu(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
         Parent root = fxmlLoader.load();

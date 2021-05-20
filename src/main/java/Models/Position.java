@@ -1,7 +1,8 @@
 package Models;
 
-import javafx.geometry.Pos;
-
+/**
+ * Class to store position of player
+ */
 public class Position {
     private int row;
     private int col;
@@ -9,11 +10,6 @@ public class Position {
     public Position(){
         this.row=1;
         this.col=4;
-    }
-
-    public Position(int row,int col){
-        this.row=row;
-        this.col=col;
     }
 
     public void setRowPosition(int row){

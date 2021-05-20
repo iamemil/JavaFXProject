@@ -1,8 +1,14 @@
 package Models;
 
+/**
+ * Class to store information about labyrinth by using {@code Cell} class
+ */
 public class Labyrinth {
     private Cell[][] cells;
 
+    /**
+     * The constructor adds borders of labyrinth by initializing two-dimensional {@code cells} array.
+     */
     public Labyrinth(){
         //Row 0
         cells = new Cell[7][7];
@@ -69,6 +75,12 @@ public class Labyrinth {
         this.cells[6][6] = new Cell(0,1,1,1);
     }
 
+    /**
+     * Function to return Cell
+     * @param row row of the Cell
+     * @param col column of the Cell
+     * @return {@code Cell} of array using parameters.
+     */
     public Cell getCell(int row, int col){
         return this.cells[row][col];
     }
