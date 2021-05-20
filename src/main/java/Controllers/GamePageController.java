@@ -34,6 +34,7 @@ import static javafx.scene.shape.StrokeType.INSIDE;
 public class GamePageController {
 
     private Player player;
+    private Position playerPosition;
     private Labyrinth labyrinth;
 
     @FXML
@@ -57,7 +58,7 @@ public class GamePageController {
         this.labyrinth = new Labyrinth();
         this.player = new Player();
         this.player.setNumOfMoves(0);
-        this.player.setPosition(new Position());
+        this.playerPosition = new Position();
         this.player.setResult(false);
     }
 
@@ -127,6 +128,8 @@ public class GamePageController {
                 if(player.getGameEnd()==null)
                     System.out.println("Game given up");
                 try {
+                    gameResetbtn.setDisable(true);
+                    giveUpBtn.setDisable(true);
                     finishGame();
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
@@ -138,11 +141,11 @@ public class GamePageController {
 
 
     private void move(Direction direction) throws JsonProcessingException {
-        int newRow = this.player.getPosition().getRowPosition() + direction.getDy();
-        int newCol = this.player.getPosition().getColPosition() + direction.getDx();
+        int newRow = playerPosition.getRowPosition() + direction.getDy();
+        int newCol = playerPosition.getColPosition() + direction.getDx();
 
         if((newRow >= 0 && newRow <= 6) && (newCol >= 0 && newCol <= 6)){
-                Cell currentCell = this.labyrinth.getCell(this.player.getPosition().getRowPosition(), this.player.getPosition().getColPosition());
+                Cell currentCell = this.labyrinth.getCell(this.playerPosition.getRowPosition(), this.playerPosition.getColPosition());
                 boolean possibleMove=false;
                 switch (direction){
                     case UP -> possibleMove = currentCell.getTopWall() == 0 ? true : false;
@@ -152,17 +155,20 @@ public class GamePageController {
                 }
                 if(possibleMove){
                     if(!checkGameEnd()){
-                        this.player.getPosition().setRowPosition(newRow);
-                        this.player.getPosition().setColPosition(newCol);
+                        this.playerPosition.setRowPosition(newRow);
+                        this.playerPosition.setColPosition(newCol);
+
                         this.player.setNumOfMoves(this.player.getNumOfMoves()+1);
                         numOfMovesLabel.setText("Moves: " + String.valueOf(this.player.getNumOfMoves()));
                         gridBoard.getChildren().remove(playerCircle);
-                        gridBoard.add(playerCircle,this.player.getPosition().getColPosition(),this
-                                .player.getPosition().getRowPosition());
+                        gridBoard.add(playerCircle,this.playerPosition.getColPosition(),this
+                                .playerPosition.getRowPosition());
                     }
                     if(checkGameEnd()) {
                         this.player.setResult(true);
                         usernameLabel.setText("Congrats, " + this.player.getUserName() + "! You won !");
+                        gameResetbtn.setDisable(true);
+                        giveUpBtn.setDisable(true);
                         finishGame();
                     }
                 }
@@ -171,7 +177,7 @@ public class GamePageController {
     }
 
     private boolean checkGameEnd(){
-        return this.player.getPosition().getRowPosition() == 5 && this.player.getPosition().getColPosition() == 2 ? true : false;
+        return this.playerPosition.getRowPosition() == 5 && this.playerPosition.getColPosition() == 2 ? true : false;
     }
 
     public void resetGame() {
@@ -179,8 +185,8 @@ public class GamePageController {
         usernameLabel.setText("Current user: " + this.player.getUserName());
         numOfMovesLabel.setText("Moves: " + String.valueOf(this.player.getNumOfMoves()));
         gridBoard.getChildren().remove(playerCircle);
-        this.player.getPosition().setRowPosition(1);
-        this.player.getPosition().setColPosition(4);
+        this.playerPosition.setRowPosition(1);
+        this.playerPosition.setColPosition(4);
         gridBoard.add(playerCircle,4,1);
         this.player.setResult(false);
         this.player.setGameStart(Instant.now());
@@ -190,7 +196,6 @@ public class GamePageController {
     public void finishGame() throws JsonProcessingException {
         if (this.player.getGameEnd() == null) {
         this.player.setGameEnd(Instant.now());
-        this.player.setGameDuration((int) (this.player.getGameEnd().getEpochSecond() - this.player.getGameStart().getEpochSecond()));
         ObjectMapper obj = new ObjectMapper().registerModule(new JavaTimeModule());
         String jsonString = obj.writeValueAsString(this.player);
         System.out.println(jsonString);

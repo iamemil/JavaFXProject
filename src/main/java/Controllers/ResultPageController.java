@@ -3,7 +3,9 @@ package Controllers;
 import Models.Player;
 import Models.PlayerResult;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,8 +20,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResultPageController {
@@ -33,26 +37,38 @@ public class ResultPageController {
     private TableColumn<Player, Double> score;
 
     @FXML
-    private void initialize() throws IOException {
+    private void initialize() {
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
-        List<Player> players = new ObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .readValue(ResultPageController.class.getResourceAsStream("/data.json"), new TypeReference<List<Player>>() {});
 
+        File data = new File(GamePageController.class.getClassLoader().getResource("data.json").getFile());
 
-        ObservableList<PlayerResult> observableList = FXCollections.observableArrayList();
-
-        players.stream()
-                .filter(a -> a.isResult()==true)
-                .sorted().limit(10)
-                .forEach(Player ->{
-                    PlayerResult playerResult = new PlayerResult();
-                    playerResult.setName(Player.getUserName());
-                    playerResult.setScore((double) (Player.getNumOfMoves()/Player.getGameDuration()));
-                    observableList.add(playerResult);
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        List<Player> players = new ArrayList<Player>();
+        ObservableList<PlayerResult> results = FXCollections.observableArrayList();
+        try {
+            if(data.length()!=0){
+                players = objectMapper.readValue(data, new TypeReference<List<Player>>() {
                 });
-        tableView.setItems(observableList);
+                players.stream()
+                        .filter(a -> a.isResult()==true)
+                        .sorted().limit(10)
+                        .forEach(Player ->{
+                            PlayerResult playerResult = new PlayerResult();
+                            playerResult.setName(Player.getUserName());
+                            playerResult.setScore((double) (Player.getNumOfMoves()/((int) (Player.getGameEnd().getEpochSecond() - Player.getGameStart().getEpochSecond()))));
+                            results.add(playerResult);
+                        });
+            }
+
+            tableView.setItems(results);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
     }
 
     public void goToMenu(ActionEvent actionEvent) throws IOException {
