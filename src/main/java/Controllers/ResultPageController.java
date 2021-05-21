@@ -22,6 +22,7 @@ import util.ControllerHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,15 +49,14 @@ public class ResultPageController {
         Logger.info("Initializing Results table...");
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
-        File data = new File(GamePageController.class.getClassLoader().getResource("data.json").getFile());
-
+        InputStream data = ResultPageController.class.getResourceAsStream("/data/data.json");
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         List<Player> players = new ArrayList<Player>();
         ObservableList<PlayerResult> results = FXCollections.observableArrayList();
         try {
-            if(data.length()!=0){
-                players = objectMapper.readValue(data, new TypeReference<List<Player>>() {
-                });
+            if(data.available()!=0){
+                players = objectMapper
+                        .readValue(data, new TypeReference<List<Player>>() {});
                 players.stream()
                         .filter(a -> a.isResult()==true)
                         .sorted().limit(10)

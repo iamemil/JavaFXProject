@@ -27,7 +27,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.stage.Stage;
-import lombok.extern.java.Log;
 import org.tinylog.Logger;
 import util.ControllerHelper;
 
@@ -249,8 +248,8 @@ public class GamePageController {
      * Then it adds current user to the list.
      * Finally, {@code ObjectWriter} writes the new data to {@code data.json}
      */
-    public void saveGame(){
-        File data = new File(GamePageController.class.getClassLoader().getResource("data.json").getFile());
+    public void saveGame1(){
+        File data = new File(GamePageController.class.getClassLoader().getResource("data/data.json").getFile());
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
         try {
@@ -265,7 +264,26 @@ public class GamePageController {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
 
+    public void saveGame(){
+        InputStream data = ResultPageController.class.getResourceAsStream("/data/data.json");
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        try {
+            List<Player> playerList = new ArrayList<Player>();
+            if(data.available()!=0){
+                playerList = objectMapper.readValue(data, new TypeReference<List<Player>>() {
+                });
+            }
+            playerList.add(this.player);
+            OutputStream out = new FileOutputStream(ResultPageController.class.getResource("/data/data.json").getFile());
+
+            ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
+            writer.writeValue(out,playerList);
+            Logger.info("Game data has been saved");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
