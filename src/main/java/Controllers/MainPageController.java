@@ -3,10 +3,9 @@ package Controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import util.ControllerHelper;
+import org.tinylog.Logger;
 import java.io.IOException;
 
 /**
@@ -14,18 +13,16 @@ import java.io.IOException;
  */
 public class MainPageController {
 
-
     /**
      * When New Game button is pressed, this function gets called.
      * Function sets stage scene to {@code SetUsernamePage}
      * @throws IOException if {@code FXMLLoader} instance encounters exception.
      */
     public void startNewGame(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SetUsernamePage.fxml"));
-        Parent root = fxmlLoader.load();
+        Logger.info("New Game button is clicked");
+        FXMLLoader fxmlLoader = new FXMLLoader();
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        ControllerHelper.loadAndShowFXML(fxmlLoader,"/fxml/SetUsernamePage.fxml",stage);
     }
     /**
      * When Results button is pressed, this function gets called.
@@ -33,10 +30,9 @@ public class MainPageController {
      * @throws IOException if {@code FXMLLoader} instance encounters exception.
      */
     public void showResults(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ResultPage.fxml"));
-        Parent root = fxmlLoader.load();
+        Logger.info("Results button is clicked");
+        FXMLLoader fxmlLoader = new FXMLLoader();
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        ControllerHelper.loadAndShowFXML(fxmlLoader,"/fxml/ResultPage.fxml",stage);
     }
 }

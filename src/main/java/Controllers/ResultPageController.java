@@ -17,6 +17,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.tinylog.Logger;
+import util.ControllerHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,9 +45,9 @@ public class ResultPageController {
      */
     @FXML
     private void initialize() {
+        Logger.info("Initializing Results table...");
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
-
         File data = new File(GamePageController.class.getClassLoader().getResource("data.json").getFile());
 
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -65,7 +67,6 @@ public class ResultPageController {
                             results.add(playerResult);
                         });
             }
-
             tableView.setItems(results);
 
         }catch (Exception e){
@@ -81,10 +82,8 @@ public class ResultPageController {
      * @throws IOException if {@code FXMLLoader} instance encounters exception.
      */
     public void goToMenu(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
-        Parent root = fxmlLoader.load();
+        FXMLLoader fxmlLoader = new FXMLLoader();
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        ControllerHelper.loadAndShowFXML(fxmlLoader,"/fxml/MainPage.fxml",stage);
     }
 }

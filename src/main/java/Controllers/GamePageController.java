@@ -11,7 +11,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,6 +27,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.stage.Stage;
+import lombok.extern.java.Log;
+import org.tinylog.Logger;
+import util.ControllerHelper;
 
 import static javafx.scene.shape.StrokeType.INSIDE;
 
@@ -87,14 +89,13 @@ public class GamePageController {
      * @param scene scene is passed to be able to add {@code EventFilter} and {@code setOnAction} functions
      */
     public void initdata(String userName,Scene scene) {
-        player.setUserName(userName);
+        this.player.setUserName(userName);
         usernameLabel.setText("Current user: " + this.player.getUserName());
         numOfMovesLabel.setText("Moves: " + this.player.getNumOfMoves());
-
         playerCircle = createCircle();
         gridBoard.add(playerCircle,4,1);
         this.player.setGameStart(Instant.now());
-
+        Logger.info("{}'s initial move count is set to 0 and game started at {}",this.player.getUserName(),this.player.getGameStart().toString());
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent){
@@ -142,8 +143,8 @@ public class GamePageController {
         giveUpBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                //if(player.getGameEnd()==null)
-                //    System.out.println("Game given up");
+                if(player.getGameEnd()==null)
+                   Logger.info("{} gave up the game",player.getUserName());
                 gameResetbtn.setDisable(true);
                 giveUpBtn.setDisable(true);
                 finishGame();
@@ -183,10 +184,12 @@ public class GamePageController {
                         gridBoard.getChildren().remove(playerCircle);
                         gridBoard.add(playerCircle,this.playerPosition.getColPosition(),this
                                 .playerPosition.getRowPosition());
+                        Logger.info("{}'s move count is {} and the circle is moved to ({},{})",this.player.getUserName(),this.player.getNumOfMoves(),this.playerPosition.getRowPosition(),this.playerPosition.getColPosition());
                     }
                     if(checkGameEnd()) {
                         this.player.setResult(true);
-                        usernameLabel.setText("Congrats, " + this.player.getUserName() + "! You won !");
+                        usernameLabel.setText("Congrats, " + this.player.getUserName() + "! You finished the game !");
+                        Logger.info("{} finished the game",this.player.getUserName());
                         gameResetbtn.setDisable(true);
                         giveUpBtn.setDisable(true);
                         finishGame();
@@ -224,6 +227,8 @@ public class GamePageController {
         this.player.setResult(false);
         this.player.setGameStart(Instant.now());
         this.player.setGameEnd(null);
+        Logger.info("{}'s move count is set to 0 and the circle is moved to (1,4). Game time is resetted to {}",this.player.getUserName(),this.player.getGameStart());
+
     }
 
     /**
@@ -256,6 +261,7 @@ public class GamePageController {
             }
             playerList.add(this.player);
             writer.writeValue(data, playerList);
+            Logger.info("Game data has been saved");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -268,10 +274,8 @@ public class GamePageController {
      * @throws IOException if {@code FXMLLoader} instance encounters exception.
      */
     public void goToMenu(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
-        Parent root = fxmlLoader.load();
+        FXMLLoader fxmlLoader = new FXMLLoader();
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        ControllerHelper.loadAndShowFXML(fxmlLoader,"/fxml/MainPage.fxml",stage);
     }
 }

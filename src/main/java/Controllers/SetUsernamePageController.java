@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.tinylog.Logger;
+import util.ControllerHelper;
 
 import java.io.IOException;
 
@@ -32,16 +34,16 @@ public class SetUsernamePageController {
     public void startGame(ActionEvent actionEvent) throws IOException {
         if (newUsernameTextField.getText().isEmpty()) {
             errorLabel.setText("* Username is empty!");
+            Logger.warn("Username field is empty");
         } else {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/GamePage.fxml"));
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root);
+            Logger.info("Username is set to {}, loading game scene.",newUsernameTextField.getText());
             fxmlLoader.<GamePageController>getController().initdata(newUsernameTextField.getText(),scene);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
-
-            //log.info("Username is set to {}, loading game scene.", newUsernameTextField.getText());
         }
     }
     /**
@@ -50,10 +52,8 @@ public class SetUsernamePageController {
      * @throws IOException if {@code FXMLLoader} instance encounters exception.
      */
     public void goToMenu(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
-        Parent root = fxmlLoader.load();
+        FXMLLoader fxmlLoader = new FXMLLoader();
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
+        ControllerHelper.loadAndShowFXML(fxmlLoader,"/fxml/MainPage.fxml",stage);
     }
 }
