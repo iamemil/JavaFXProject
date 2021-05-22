@@ -10,8 +10,8 @@
    <children>
       <TableView fx:id="tableView" layoutX="50.0" layoutY="50.0" prefHeight="400.0" prefWidth="400.0">
         <columns>
-          <TableColumn fx:id="name" minWidth="200.0" prefWidth="200.0" text="Name" />
-            <TableColumn fx:id="score" minWidth="200.0" prefWidth="200.0" text="Score" />
+          <TableColumn fx:id="name" editable="false" minWidth="200.0" prefWidth="200.0" text="Name" />
+            <TableColumn fx:id="score" editable="false" minWidth="200.0" prefWidth="200.0" sortType="DESCENDING" text="Score" />
         </columns>
       </TableView>
       <Button fx:id="returnToMenu" alignment="CENTER" layoutX="190.0" layoutY="450.0" mnemonicParsing="false" onAction="#goToMenu" style="-fx-background-color: white;" text="Main Menu" textFill="#4696e5">

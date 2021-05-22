@@ -12,6 +12,11 @@ public class Position {
         this.col=4;
     }
 
+    public Position(int col, int row){
+        this.col=col;
+        this.row=row;
+    }
+
     public void setRowPosition(int row){
         this.row = row;
     }

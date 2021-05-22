@@ -2,10 +2,6 @@ package Controllers;
 
 import Models.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,10 +18,6 @@ import javafx.scene.shape.Circle;
 
 import java.io.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.stage.Stage;
 import org.tinylog.Logger;
 import util.ControllerHelper;
@@ -80,6 +72,11 @@ public class GamePageController {
         circle.setStroke(Paint.valueOf("#0c88f5"));
         circle.setStrokeType(INSIDE);
         return circle;
+    }
+
+    private void updateCircleLocation(Position position){
+        gridBoard.getChildren().remove(playerCircle);
+        gridBoard.add(playerCircle,position.getColPosition(),position.getRowPosition());
     }
 
     /**
@@ -146,7 +143,7 @@ public class GamePageController {
                    Logger.info("{} gave up the game",player.getUserName());
                 gameResetbtn.setDisable(true);
                 giveUpBtn.setDisable(true);
-                finishGame();
+                player.finishGame();
             }
         });
 
@@ -175,23 +172,24 @@ public class GamePageController {
                     case RIGHT -> possibleMove = currentCell.getRightWall() == 0;
                 }
                 if(possibleMove){
-                    if(!checkGameEnd()){
+                    if(!this.player.checkGameEnd(this.playerPosition)){
                         this.playerPosition.setRowPosition(newRow);
                         this.playerPosition.setColPosition(newCol);
                         this.player.setNumOfMoves(this.player.getNumOfMoves()+1);
                         numOfMovesLabel.setText("Moves: " + this.player.getNumOfMoves());
-                        gridBoard.getChildren().remove(playerCircle);
-                        gridBoard.add(playerCircle,this.playerPosition.getColPosition(),this
-                                .playerPosition.getRowPosition());
+                        //gridBoard.getChildren().remove(playerCircle);
+                        //gridBoard.add(playerCircle,this.playerPosition.getColPosition(),this
+                        //        .playerPosition.getRowPosition());
+                        this.updateCircleLocation(this.playerPosition);
                         Logger.info("{}'s move count is {} and the circle is moved to ({},{})",this.player.getUserName(),this.player.getNumOfMoves(),this.playerPosition.getRowPosition(),this.playerPosition.getColPosition());
                     }
-                    if(checkGameEnd()) {
+                    if(this.player.checkGameEnd(this.playerPosition)) {
                         this.player.setResult(true);
                         usernameLabel.setText("Congrats, " + this.player.getUserName() + "! You finished the game !");
                         Logger.info("{} finished the game",this.player.getUserName());
                         gameResetbtn.setDisable(true);
                         giveUpBtn.setDisable(true);
-                        finishGame();
+                        this.player.finishGame();
                     }
                 }
         }
@@ -199,91 +197,21 @@ public class GamePageController {
     }
 
     /**
-     * Checks if player won the game
-     * @return returns 1 if player won, 0 otherwise.
-     */
-    private boolean checkGameEnd(){
-        return this.playerPosition.getRowPosition() == 5 && this.playerPosition.getColPosition() == 2;
-    }
-
-    /**
-     * Sets player's number of moves to 0.
+     * Calls reset function of player
      * Resets usernameLabel to "Current user: {@code username}".
      * Resets numOfMovesLabel to "Moves: 0".
      * Resets blue circle's position by removing it from current place in gridpane and placing in initial place.
-     * Sets player's result to false.
-     * Sets player's game start time to current time.
-     * Sets player's game end time to {@code null}.
      */
     public void resetGame() {
-        this.player.setNumOfMoves(0);
+        this.player.reset();
         usernameLabel.setText("Current user: " + this.player.getUserName());
         numOfMovesLabel.setText("Moves: 0");
         gridBoard.getChildren().remove(playerCircle);
         this.playerPosition.setRowPosition(1);
         this.playerPosition.setColPosition(4);
         gridBoard.add(playerCircle,4,1);
-        this.player.setResult(false);
-        this.player.setGameStart(Instant.now());
-        this.player.setGameEnd(null);
         Logger.info("{}'s move count is set to 0 and the circle is moved to (1,4). Game time is resetted to {}",this.player.getUserName(),this.player.getGameStart());
 
-    }
-
-    /**
-     * Sets player's game end time current time if it is null.
-     * Calls {@code saveGame()} function.
-     */
-    public void finishGame(){
-        if (this.player.getGameEnd() == null) {
-        this.player.setGameEnd(Instant.now());
-        saveGame();
-        }
-    }
-
-    /**
-     * Function gets {@code data.json} file by using Class Loader Mechanism.
-     * Then it checks if {@code data.json} has data.
-     * If yes, then by using {@code ObjectMapper} it adds all data from the file to a {@code List<Player> playerList}.
-     * Then it adds current user to the list.
-     * Finally, {@code ObjectWriter} writes the new data to {@code data.json}
-     */
-    public void saveGame1(){
-        File data = new File(GamePageController.class.getClassLoader().getResource("data/data.json").getFile());
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
-        try {
-            List<Player> playerList = new ArrayList<Player>();
-            if(data.length()!=0){
-                playerList = objectMapper.readValue(data, new TypeReference<List<Player>>() {
-                });
-            }
-            playerList.add(this.player);
-            writer.writeValue(data, playerList);
-            Logger.info("Game data has been saved");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    public void saveGame(){
-        InputStream data = ResultPageController.class.getResourceAsStream("/data/data.json");
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        try {
-            List<Player> playerList = new ArrayList<Player>();
-            if(data.available()!=0){
-                playerList = objectMapper.readValue(data, new TypeReference<List<Player>>() {
-                });
-            }
-            playerList.add(this.player);
-            OutputStream out = new FileOutputStream(ResultPageController.class.getResource("/data/data.json").getFile());
-
-            ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
-            writer.writeValue(out,playerList);
-            Logger.info("Game data has been saved");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     /**

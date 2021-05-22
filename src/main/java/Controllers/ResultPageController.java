@@ -58,12 +58,12 @@ public class ResultPageController {
                 players = objectMapper
                         .readValue(data, new TypeReference<List<Player>>() {});
                 players.stream()
-                        .filter(a -> a.isResult()==true)
+                        .filter(Player::isResult)
                         .sorted().limit(10)
                         .forEach(Player ->{
                             PlayerResult playerResult = new PlayerResult();
                             playerResult.setName(Player.getUserName());
-                            playerResult.setScore((double) (Player.getNumOfMoves()/((int) (Player.getGameEnd().getEpochSecond() - Player.getGameStart().getEpochSecond()))));
+                            playerResult.setScore((double) (Player.getNumOfMoves()/Integer.max(((int) (Player.getGameEnd().getEpochSecond() - Player.getGameStart().getEpochSecond())),1)));
                             results.add(playerResult);
                         });
             }

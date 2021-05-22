@@ -8,6 +8,10 @@ import org.tinylog.Logger;
 import java.io.IOException;
 
 public class ControllerHelper {
+
+    /**
+     * Loads JavaFX scenes for controllers.
+     */
     public static void loadAndShowFXML(FXMLLoader fxmlLoader, String resourceName, Stage stage) throws IOException {
         Logger.trace("Loading FXML resource {}", resourceName);
         fxmlLoader.setLocation(fxmlLoader.getClass().getResource(resourceName));
