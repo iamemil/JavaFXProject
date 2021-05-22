@@ -1,7 +1,7 @@
 package Models;
 
 /**
- * Class to store information about borders of cells in {@code GridPane}
+ * Class to hold information about borders of cells in {@code GridPane}
  */
 public class Cell {
 

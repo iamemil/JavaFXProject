@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class to store player information
+ * Class to hold player information
  */
 @Data
 public class Player implements Comparable<Player> {
