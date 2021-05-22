@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 import org.tinylog.Logger;
 import java.io.IOException;
 
+/**
+ * Helper class for Controllers
+ */
 public class ControllerHelper {
 
     /**

@@ -1,21 +1,7 @@
 package Models;
 
-import Controllers.ResultPageController;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.Data;
-import org.tinylog.Logger;
-
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
+import lombok.Data;
 /**
  * Class to hold player information
  */
@@ -41,48 +27,6 @@ public class Player implements Comparable<Player> {
         this.setGameEnd(null);
     }
 
-    /**
-     * Checks if player won the game
-     * @return returns 1 if player won, 0 otherwise.
-     */
-    public boolean checkGameEnd(Position playerPosition){
-        return playerPosition.getRowPosition() == 5 && playerPosition.getColPosition() == 2;
-    }
-    /**
-     * Sets player's game end time current time if it is null.
-     * Calls {@code saveGame()} function.
-     */
-    public void finishGame(){
-        if (this.getGameEnd() == null) {
-            this.setGameEnd(Instant.now());
-            this.saveGame();
-        }
-    }
-    /**
-     * Function gets {@code data.json} file by using Class Loader Mechanism.
-     * Then it checks if {@code data.json} has data.
-     * If yes, then by using {@code ObjectMapper} it adds all data from the file to a {@code List<Player> playerList}.
-     * Then it adds current user to the list.
-     * Finally, {@code ObjectWriter} writes the new data to {@code data.json}
-     */
-    public void saveGame(){
-        InputStream data = ResultPageController.class.getResourceAsStream("/data.json");
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        try {
-            List<Player> playerList = new ArrayList<Player>();
-            if(data!=null){
-                playerList = objectMapper.readValue(data, new TypeReference<List<Player>>() {
-                });
-            }
-            playerList.add(this);
-            OutputStream out = new FileOutputStream(ResultPageController.class.getResource("/data.json").getFile());
-            ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
-            writer.writeValue(out,playerList);
-            Logger.info("Game data has been saved");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
     /**
      * Function to compare two players according to numOfMoves/gameDuration logic
      * @param o instance of other player

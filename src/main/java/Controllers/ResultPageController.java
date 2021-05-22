@@ -54,7 +54,7 @@ public class ResultPageController {
         List<Player> players = new ArrayList<Player>();
         ObservableList<PlayerResult> results = FXCollections.observableArrayList();
         try {
-            if(data!=null){
+            if(data.available()!=0){
                 players = objectMapper
                         .readValue(data, new TypeReference<List<Player>>() {});
                 players.stream()
