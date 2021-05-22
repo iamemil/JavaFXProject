@@ -77,17 +77,15 @@ public class Game {
     public void save(){
         String protocol = this.getClass().getResource("").getProtocol();
         if(Objects.equals(protocol, "jar")){
-            Logger.info("jar running");
-            this.saveFromJar();
+            this.JarSave();
         } else if(Objects.equals(protocol, "file")) {
-            Logger.info("ide running");
-            this.saveFromIde();
+            this.ideSave();
         }
     }
     /**
      * Function to save data when program is running from IDE
      */
-    private void saveFromIde(){
+    private void ideSave(){
         InputStream data = ResultPageController.class.getResourceAsStream("/data.json");
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         try {
@@ -109,7 +107,7 @@ public class Game {
     /**
      * Function to fill data when program is running as JAR
      */
-    private void saveFromJar(){
+    private void JarSave(){
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         try {
             String path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();

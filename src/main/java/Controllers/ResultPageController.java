@@ -57,11 +57,9 @@ public class ResultPageController {
         List<Player> players = new ArrayList<Player>();
         ObservableList<PlayerResult> results = FXCollections.observableArrayList();
         if(Objects.equals(protocol, "jar")){
-            Logger.info("jar running");
-            this.readFromJar(objectMapper,players,results);
+            this.jarRead(objectMapper,players,results);
         } else if(Objects.equals(protocol, "file")) {
-            Logger.info("ide running");
-            this.readFromIde(objectMapper,players,results);
+            this.ideRead(objectMapper,players,results);
         }
 
     }
@@ -69,7 +67,7 @@ public class ResultPageController {
     /**
      * Function to fill data when program is running as JAR
      */
-    private void readFromJar(ObjectMapper objectMapper,List<Player> players,ObservableList<PlayerResult> results){
+    private void jarRead(ObjectMapper objectMapper,List<Player> players,ObservableList<PlayerResult> results){
 
         try {
             String path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
@@ -100,7 +98,7 @@ public class ResultPageController {
     /**
      * Function to fill data when program is running from IDE
      */
-    private void readFromIde(ObjectMapper objectMapper,List<Player> players,ObservableList<PlayerResult> results){
+    private void ideRead(ObjectMapper objectMapper,List<Player> players,ObservableList<PlayerResult> results){
         InputStream data = ResultPageController.class.getResourceAsStream("/data.json");
         try {
             if(data.available()!=0){
