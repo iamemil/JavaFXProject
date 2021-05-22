@@ -21,10 +21,13 @@ import org.tinylog.Logger;
 import util.ControllerHelper;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Controller to manage actions in {@code ResultPage}
@@ -49,11 +52,30 @@ public class ResultPageController {
         Logger.info("Initializing Results table...");
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
-        InputStream data = ResultPageController.class.getResourceAsStream("/data.json");
+        String protocol = this.getClass().getResource("").getProtocol();
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         List<Player> players = new ArrayList<Player>();
         ObservableList<PlayerResult> results = FXCollections.observableArrayList();
+        if(Objects.equals(protocol, "jar")){
+            Logger.info("jar running");
+            this.readFromJar(objectMapper,players,results);
+        } else if(Objects.equals(protocol, "file")) {
+            Logger.info("ide running");
+            this.readFromIde(objectMapper,players,results);
+        }
+
+    }
+
+    /**
+     * Function to fill data when program is running as JAR
+     */
+    private void readFromJar(ObjectMapper objectMapper,List<Player> players,ObservableList<PlayerResult> results){
+
         try {
+            String path = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            path = path.substring(0, path.lastIndexOf("/") + 1);
+            path = URLDecoder.decode(path, "UTF-8");
+            FileInputStream data = new FileInputStream(path+"/classes/data.json");
             if(data.available()!=0){
                 players = objectMapper
                         .readValue(data, new TypeReference<List<Player>>() {});
@@ -73,8 +95,32 @@ public class ResultPageController {
             e.printStackTrace();
         }
 
+    }
 
+    /**
+     * Function to fill data when program is running from IDE
+     */
+    private void readFromIde(ObjectMapper objectMapper,List<Player> players,ObservableList<PlayerResult> results){
+        InputStream data = ResultPageController.class.getResourceAsStream("/data.json");
+        try {
+            if(data.available()!=0){
+                players = objectMapper
+                        .readValue(data, new TypeReference<List<Player>>() {});
+                players.stream()
+                        .filter(Player::isResult)
+                        .sorted().limit(10)
+                        .forEach(Player ->{
+                            PlayerResult playerResult = new PlayerResult();
+                            playerResult.setName(Player.getUserName());
+                            playerResult.setScore((double) (Player.getNumOfMoves()/Integer.max(((int) (Player.getGameEnd().getEpochSecond() - Player.getGameStart().getEpochSecond())),1)));
+                            results.add(playerResult);
+                        });
+            }
+            tableView.setItems(results);
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     /**
      * When New Game button is pressed, this function gets called.
