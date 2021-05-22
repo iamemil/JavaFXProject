@@ -68,6 +68,10 @@ public class GamePageController {
         return circle;
     }
 
+    /**
+     * Updates blue circle's location.
+     * @param position player's position
+     */
     private void updateCircleLocation(Position position){
         gridBoard.getChildren().remove(playerCircle);
         gridBoard.add(playerCircle,position.getColPosition(),position.getRowPosition());
