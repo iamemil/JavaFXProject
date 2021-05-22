@@ -11,6 +11,9 @@ public class Game {
     private Position playerPosition;
     private Labyrinth labyrinth;
 
+    /**
+     * Sets properties to needed initial values
+     */
     public Game(){
         this.player = new Player();
         this.player.setNumOfMoves(0);

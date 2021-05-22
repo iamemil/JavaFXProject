@@ -66,16 +66,16 @@ public class Player implements Comparable<Player> {
      * Finally, {@code ObjectWriter} writes the new data to {@code data.json}
      */
     public void saveGame(){
-        InputStream data = ResultPageController.class.getResourceAsStream("/data/data.json");
+        InputStream data = ResultPageController.class.getResourceAsStream("/data.json");
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         try {
             List<Player> playerList = new ArrayList<Player>();
-            if(data.available()!=0){
+            if(data!=null){
                 playerList = objectMapper.readValue(data, new TypeReference<List<Player>>() {
                 });
             }
             playerList.add(this);
-            OutputStream out = new FileOutputStream(ResultPageController.class.getResource("/data/data.json").getFile());
+            OutputStream out = new FileOutputStream(ResultPageController.class.getResource("/data.json").getFile());
             ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
             writer.writeValue(out,playerList);
             Logger.info("Game data has been saved");

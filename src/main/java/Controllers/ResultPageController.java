@@ -49,12 +49,12 @@ public class ResultPageController {
         Logger.info("Initializing Results table...");
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
-        InputStream data = ResultPageController.class.getResourceAsStream("/data/data.json");
+        InputStream data = ResultPageController.class.getResourceAsStream("/data.json");
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         List<Player> players = new ArrayList<Player>();
         ObservableList<PlayerResult> results = FXCollections.observableArrayList();
         try {
-            if(data.available()!=0){
+            if(data!=null){
                 players = objectMapper
                         .readValue(data, new TypeReference<List<Player>>() {});
                 players.stream()

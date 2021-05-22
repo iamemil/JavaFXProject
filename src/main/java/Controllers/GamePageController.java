@@ -135,7 +135,7 @@ public class GamePageController {
             @Override
             public void handle(ActionEvent actionEvent) {
                 if(game.getPlayer().getGameEnd()==null)
-                   Logger.info("{} gave up the game",game.getPlayer().getUserName());
+                    Logger.info("{} gave up the game",game.getPlayer().getUserName());
                 gameResetbtn.setDisable(true);
                 giveUpBtn.setDisable(true);
                 game.getPlayer().finishGame();
@@ -158,35 +158,35 @@ public class GamePageController {
         int newCol = game.getPlayerPosition().getColPosition() + direction.getDx();
 
         if((newRow >= 0 && newRow <= 6) && (newCol >= 0 && newCol <= 6)){
-                Cell currentCell = this.game.getLabyrinth().getCell(this.game.getPlayerPosition().getRowPosition(), this.game.getPlayerPosition().getColPosition());
-                boolean possibleMove=false;
-                switch (direction){
-                    case UP -> possibleMove = currentCell.getTopWall() == 0;
-                    case DOWN -> possibleMove = currentCell.getBottomWall() == 0;
-                    case LEFT -> possibleMove = currentCell.getLeftWall() == 0;
-                    case RIGHT -> possibleMove = currentCell.getRightWall() == 0;
+            Cell currentCell = this.game.getLabyrinth().getCell(this.game.getPlayerPosition().getRowPosition(), this.game.getPlayerPosition().getColPosition());
+            boolean possibleMove=false;
+            switch (direction){
+                case UP -> possibleMove = currentCell.getTopWall() == 0;
+                case DOWN -> possibleMove = currentCell.getBottomWall() == 0;
+                case LEFT -> possibleMove = currentCell.getLeftWall() == 0;
+                case RIGHT -> possibleMove = currentCell.getRightWall() == 0;
+            }
+            if(possibleMove){
+                if(!this.game.getPlayer().checkGameEnd(this.game.getPlayerPosition())){
+                    this.game.getPlayerPosition().setRowPosition(newRow);
+                    this.game.getPlayerPosition().setColPosition(newCol);
+                    this.game.getPlayer().setNumOfMoves(this.game.getPlayer().getNumOfMoves()+1);
+                    numOfMovesLabel.setText("Moves: " + this.game.getPlayer().getNumOfMoves());
+                    //gridBoard.getChildren().remove(playerCircle);
+                    //gridBoard.add(playerCircle,this.playerPosition.getColPosition(),this
+                    //        .playerPosition.getRowPosition());
+                    this.updateCircleLocation(this.game.getPlayerPosition());
+                    Logger.info("{}'s move count is {} and the circle is moved to ({},{})",this.game.getPlayer().getUserName(),this.game.getPlayer().getNumOfMoves(),this.game.getPlayerPosition().getRowPosition(),this.game.getPlayerPosition().getColPosition());
                 }
-                if(possibleMove){
-                    if(!this.game.getPlayer().checkGameEnd(this.game.getPlayerPosition())){
-                        this.game.getPlayerPosition().setRowPosition(newRow);
-                        this.game.getPlayerPosition().setColPosition(newCol);
-                        this.game.getPlayer().setNumOfMoves(this.game.getPlayer().getNumOfMoves()+1);
-                        numOfMovesLabel.setText("Moves: " + this.game.getPlayer().getNumOfMoves());
-                        //gridBoard.getChildren().remove(playerCircle);
-                        //gridBoard.add(playerCircle,this.playerPosition.getColPosition(),this
-                        //        .playerPosition.getRowPosition());
-                        this.updateCircleLocation(this.game.getPlayerPosition());
-                        Logger.info("{}'s move count is {} and the circle is moved to ({},{})",this.game.getPlayer().getUserName(),this.game.getPlayer().getNumOfMoves(),this.game.getPlayerPosition().getRowPosition(),this.game.getPlayerPosition().getColPosition());
-                    }
-                    if(this.game.getPlayer().checkGameEnd(this.game.getPlayerPosition())) {
-                        this.game.getPlayer().setResult(true);
-                        usernameLabel.setText("Congrats, " + this.game.getPlayer().getUserName() + "! You finished the game !");
-                        Logger.info("{} finished the game",this.game.getPlayer().getUserName());
-                        gameResetbtn.setDisable(true);
-                        giveUpBtn.setDisable(true);
-                        this.game.getPlayer().finishGame();
-                    }
+                if(this.game.getPlayer().checkGameEnd(this.game.getPlayerPosition())) {
+                    this.game.getPlayer().setResult(true);
+                    usernameLabel.setText("Congrats, " + this.game.getPlayer().getUserName() + "! You finished the game !");
+                    Logger.info("{} finished the game",this.game.getPlayer().getUserName());
+                    gameResetbtn.setDisable(true);
+                    giveUpBtn.setDisable(true);
+                    this.game.getPlayer().finishGame();
                 }
+            }
         }
 
     }
