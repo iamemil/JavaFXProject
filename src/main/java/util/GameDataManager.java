@@ -12,6 +12,7 @@ import org.tinylog.Logger;
 
 import java.io.*;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -88,5 +89,28 @@ public class GameDataManager {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Function to return FileInputStream data when program is running as JAR
+     */
+    public static FileInputStream JarRead(ResultPageController controller){
+        try {
+            String path = controller.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            path = path.substring(0, path.lastIndexOf("/") + 1);
+            path = URLDecoder.decode(path, StandardCharsets.UTF_8);
+            FileInputStream file = new FileInputStream(path+"/classes/data.json");
+            return file;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Function to return InputStream data when program is running from IDE
+     */
+    public static InputStream IdeRead(ResultPageController controller){
+        return controller.getClass().getResourceAsStream("/data.json");
     }
 }
