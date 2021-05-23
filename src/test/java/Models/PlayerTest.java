@@ -12,6 +12,19 @@ class PlayerTest {
     Player player2 = new Player();
 
     @Test
+    void reset() {
+        player1.setNumOfMoves(10);
+        player1.setResult(true);
+        player1.setGameStart(null);
+        player1.setGameEnd(Instant.now());
+        player1.reset();
+        assertEquals(0,player1.getNumOfMoves());
+        assertFalse(player1.isResult());
+        assertNotNull(player1.getGameStart());
+        assertNull(player1.getGameEnd());
+    }
+
+    @Test
     void compareTo() {
         player1.setNumOfMoves(10);
         player1.setGameStart(Instant.now());
@@ -22,4 +35,5 @@ class PlayerTest {
 
         assertEquals(10, player1.compareTo(player2));
     }
+
 }

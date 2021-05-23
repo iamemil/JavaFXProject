@@ -15,4 +15,13 @@ class GameTest {
         assertFalse(game.checkGameEnd(position));
     }
 
+    @Test
+    void reset() {
+        game.getPlayerPosition().setColPosition(5);
+        game.getPlayerPosition().setRowPosition(5);
+        game.reset();
+        assertEquals(1,game.getPlayerPosition().getRowPosition());
+        assertEquals(4,game.getPlayerPosition().getColPosition());
+    }
+
 }
